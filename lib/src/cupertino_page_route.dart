@@ -19,6 +19,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/animation.dart' show Curves;
 
+import 'back_gesture_recognizer.dart';
 import 'back_gesture_width_theme.dart';
 
 const double _kDefaultBackGestureWidth = 20.0;
@@ -628,12 +629,12 @@ class _CupertinoBackGestureDetector<T> extends StatefulWidget {
 class _CupertinoBackGestureDetectorState<T> extends State<_CupertinoBackGestureDetector<T>> {
   _CupertinoBackGestureController<T> _backGestureController;
 
-  HorizontalDragGestureRecognizer _recognizer;
+  BackHorizontalDragGestureRecognizer _recognizer;
 
   @override
   void initState() {
     super.initState();
-    _recognizer = HorizontalDragGestureRecognizer(debugOwner: this)
+    _recognizer = BackHorizontalDragGestureRecognizer(debugOwner: this)
       ..onStart = _handleDragStart
       ..onUpdate = _handleDragUpdate
       ..onEnd = _handleDragEnd
@@ -706,21 +707,10 @@ class _CupertinoBackGestureDetectorState<T> extends State<_CupertinoBackGestureD
                            MediaQuery.of(context).padding.left :
                            MediaQuery.of(context).padding.right;
     dragAreaWidth = max(dragAreaWidth, _backGestureWidth);
-    return Stack(
-      fit: StackFit.passthrough,
-      children: <Widget>[
-        widget.child,
-        PositionedDirectional(
-          start: 0.0,
-          width: dragAreaWidth,
-          top: 0.0,
-          bottom: 0.0,
-          child: Listener(
-            onPointerDown: _handlePointerDown,
-            behavior: HitTestBehavior.translucent,
-          ),
-        ),
-      ],
+    return Listener(
+      onPointerDown: _handlePointerDown,
+      behavior: HitTestBehavior.translucent,
+      child: widget.child,
     );
   }
 }
